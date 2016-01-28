@@ -18,7 +18,7 @@ namespace csharpdemo
             return this.Name.CompareTo(other.Name);
         }
     }
-
+ 
     class  ListContacts
     {
         public static void Main()
