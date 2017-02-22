@@ -1,0 +1,37 @@
+using System;
+
+namespace csharpdemo
+{
+    class DaysInMonth
+    {
+        public static void Main()
+        {
+            string month;
+            int year, days;
+
+            Console.Write("Enter first 3 letters of month name : ");
+            month = Console.ReadLine();
+
+            Console.Write("Enter Years : ");
+            year = Int32.Parse(Console.ReadLine());
+
+            switch (month)
+            {
+                case "feb":
+                    if (year % 4 == 0 && year % 100 != 0 ||  year % 400 == 0)
+                        days = 29;
+                    else
+                        days = 28;
+                    break;
+                case "apr":
+                case "jun":
+                case "sep":
+                case "nov": days = 30; break;
+                default: days = 31; break;
+            }
+
+            Console.WriteLine("No. of days in {0} is {1}", month, days);
+
+        }
+    }
+}
