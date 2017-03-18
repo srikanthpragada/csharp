@@ -1,0 +1,38 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace csharpdemo
+{
+    class Product
+    {
+
+    }
+
+    static class ExtensionMethods
+    {
+        // Extension method for Product 
+        public static void Print(this Product p)
+        {
+            Console.WriteLine("Printing " + p.GetHashCode());
+        }
+    }
+
+    class FeaturesOf3
+    {
+        
+        public static void Main()
+        {
+            var i = 10;
+            var n = "Abc";
+            var v = new MyTime();
+            // Anonymous type 
+            var person = new { Name = "Srikanth", Mobile = "9059057000" };
+
+            Product p = new Product();
+            p.Print();
+        }
+    }
+}
