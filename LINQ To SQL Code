@@ -1,0 +1,166 @@
+Category.cs
+===============
+using System.Data.Linq.Mapping;
+
+namespace csharpdemo
+{
+    [Table (Name ="categories")]
+    class Category
+    {
+        [Column (Name ="CatCode", IsPrimaryKey = true)]
+        public string Code { get; set; }
+
+        [Column(Name = "CatDesc")]
+        public string Description { get; set; }
+    }
+}
+
+InventoryDataContext.cs
+=======================
+using System.Data.Linq;
+
+namespace csharpdemo
+{
+    class InventoryDataContext : DataContext 
+    {
+        public InventoryDataContext() : base(@"Data Source=(localdb)\v11.0;Initial Catalog=msdb;Integrated Security=True")
+        { }
+
+        public Table<Category>  Categories
+        {
+            get
+            {
+                return GetTable<Category>();
+            }
+        }
+    }
+}
+
+
+ListCategories.cs
+==================
+using System;
+using System.Linq;
+
+namespace csharpdemo
+{
+    class ListCategories
+    {
+        public static void Main()
+        {
+            InventoryDataContext ctx = new InventoryDataContext();
+            // ctx.Log = Console.Out;
+
+            var cats = from c in ctx.Categories
+                      // where c.Code.Length <= 4
+                       orderby c.Code
+                       select new {
+                           Code = c.Code,
+                           Description = c.Description,
+                           Length = c.Code.Length
+                       };
+
+
+            foreach (var c in cats)
+                Console.WriteLine("{0}  {1}  {2}", c.Code.PadRight(10), 
+                    c.Description.PadRight(30), c.Length);
+
+        }
+    }
+}
+
+
+AddCategory.cs
+=============
+using System;
+
+namespace csharpdemo
+{
+    class AddCategory
+    {
+        public static void Main()
+        {
+            InventoryDataContext ctx = new InventoryDataContext();
+            ctx.Log = Console.Out;
+
+            Category c = new Category { Code = "abc", Description = "Abc" };
+
+            ctx.Categories.InsertOnSubmit(c);
+            ctx.SubmitChanges();
+
+        }
+    }
+}
+
+UpdateCategory.cs
+=================
+
+using System;
+using System.Linq;
+
+namespace csharpdemo
+{
+    class UpdateCategory
+    {
+        public static void Main()
+        {
+            InventoryDataContext ctx = new InventoryDataContext();
+            ctx.Log = Console.Out;
+
+            var cat = (from c in ctx.Categories
+                       where c.Code == "abc"
+                       select c).SingleOrDefault();
+
+            if (cat == null)
+            {
+                Console.WriteLine("Category Not Found");
+                return; 
+            }
+
+            cat.Description = "Abc Abc";
+            ctx.SubmitChanges();
+
+        }
+    }
+}
+
+
+DeleteCategory.cs
+==================
+using System;
+using System.Linq;
+
+namespace csharpdemo
+{
+    class DeleteCategory
+    {
+        public static void Main()
+        {
+            InventoryDataContext ctx = new InventoryDataContext();
+            ctx.Log = Console.Out;
+
+            var cat = (from c in ctx.Categories
+                       where c.Code == "abc"
+                       select c).SingleOrDefault();
+
+            if (cat == null)
+            {
+                Console.WriteLine("Category Not Found");
+                return; 
+            }
+
+            ctx.Categories.DeleteOnSubmit(cat);
+            ctx.SubmitChanges();
+
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
