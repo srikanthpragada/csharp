@@ -1,0 +1,76 @@
+ 
+ 
+ class AddProduct
+    {
+        public static void Main()
+        {
+            InventoryEntities ctx = new InventoryEntities();
+            ctx.Database.Log = Console.Write;
+
+            Product p = new Product { ProdName = "Mac Pro", Qoh = 1, Price = 100000, CatCode = "laptops", Remarks = "3 years onsite warrenty" };
+
+            ctx.Products.Add(p);
+            ctx.SaveChanges();
+        }
+    }
+    
+    
+  class DeleteProduct 
+    {
+        public static void Main()
+        {
+            InventoryEntities ctx = new InventoryEntities();
+            ctx.Database.Log = Console.Write;
+
+            Product p = ctx.Products.Find(15104);
+            if (p == null)
+            {
+                Console.WriteLine("Product Not Found!");
+                return;
+            }
+            ctx.Products.Remove(p);
+            ctx.SaveChanges();
+        }
+    }
+    
+    
+    
+    class UpdateProduct 
+    {
+        public static void Main()
+        {
+            InventoryEntities ctx = new InventoryEntities();
+            ctx.Database.Log = Console.Write;
+
+            Product p = ctx.Products.Find(102);
+            Console.WriteLine(ctx.Entry(p).State);
+            if (p == null)
+            {
+                Console.WriteLine("Product Not Found!");
+                return;
+            }
+            p.Price = 20000;
+            Console.WriteLine(ctx.Entry(p).State);
+            ctx.SaveChanges();
+            
+        }
+    }
+    
+    
+    class ListProducts
+    {
+        public static void Main()
+        {
+            InventoryEntities ctx = new InventoryEntities();
+            ctx.Database.Log = Console.Write;
+
+            var prods = from p in ctx.Products.Include ("Sales")  // Eager loading 
+                        where p.Price > 50000
+                        select p;
+
+            foreach (Product p in prods)
+                Console.WriteLine("{0} {1}",p.ProdName, p.Sales.Sum( s => s.Amount));
+
+
+        }
+    }
