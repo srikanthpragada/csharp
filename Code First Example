@@ -1,0 +1,95 @@
+Department.cs
+=============
+namespace csharpdemo
+{
+    class Department
+    {
+        public int DepartmentId { get; set; }
+        [StringLength(40)]
+        public string  DepartmentName { get; set; }
+        public virtual ICollection<Employee>  Employees { get; set; }
+
+    }
+}
+
+Employee.cs
+===========
+namespace csharpdemo
+{
+    class Employee
+    {
+        public int EmployeeId { get; set; }
+        [StringLength(40)]
+        public string FullName { get; set; }
+        public int Salary { get; set; }
+        public Department Department { get; set; }
+    }
+}
+
+
+HRContext.cs
+============
+// creates database with name  csharpdemo.HRContext in localdb
+namespace csharpdemo
+{
+    class HRContext : DbContext 
+    {
+        public HRContext()  
+        {
+        }
+
+        public DbSet<Department> Departments { get; set; }
+        public DbSet<Employee> Employees { get; set; }
+        
+    }
+}
+
+
+AddDepartment.cs
+================
+namespace csharpdemo
+{
+    class AddDepartment
+    {
+        public static void Main()
+        {
+            HRContext ctx = new HRContext();
+
+            Department d = new Department { DepartmentName = "Sales" };
+
+            ctx.Departments.Add(d);
+
+            Employee e = new Employee { FullName = "Jason", Salary = 10000, Department = d };
+
+            ctx.Employees.Add(e);
+
+            ctx.SaveChanges();
+
+        }
+    }
+}
+
+
+ListDepartments.cs
+===================
+namespace csharpdemo
+{
+    class ListDepartments
+    {
+        public static void Main()
+        {
+            HRContext ctx = new HRContext();
+            ctx.Database.Log = Console.Write;
+
+
+            foreach (Department d in ctx.Departments.Include("Employees"))
+            {
+                Console.WriteLine(d.DepartmentName);
+                foreach (Employee e in d.Employees)
+                    Console.WriteLine(e.FullName);
+
+            }
+
+        }
+    }
+}
