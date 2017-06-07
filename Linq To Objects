@@ -1,0 +1,116 @@
+Book.cs
+=======
+using System;
+using System.Collections.Generic;
+
+namespace csharpdemo
+{ 
+    class Book
+    {
+        public string Title { get; set; }
+        public string Author { get; set; }
+        public int Price { get; set; }
+
+
+        public override string ToString()
+        {
+            return Title + " - " + Author + " - " + Price.ToString();
+        }
+
+        public static List<Book> GetBooks()
+        {
+            return new List<Book> {
+                 new Book { Title="C# 5.0", Author ="Anders", Price = 550},
+                 new Book { Title="Oracle Database 12c", Author ="Jason Price", Price = 650},
+                 new Book { Title="Asp.net 4.5 Unleahsed", Author ="Walther", Price = 799},
+                 new Book { Title="ASP.NET AJAX In Action", Author ="Craig Walls", Price = 500},
+                 new Book { Title="Introduction To Microsoft ASP.NET AJAX", Author ="Dino", Price = 550}
+            };
+        }
+    } 
+}
+
+
+QueryOperatorsDemo.cs
+======================
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace csharpdemo
+{
+    class QueryOperatorsDemo
+    {
+        //public static bool HighPrice(Book b)
+        //{
+        //    return b.Price > 500;
+        //}
+
+        public static void Main()
+        {
+            List<Book> books = Book.GetBooks();
+
+            //var selBooks2 = books.Where(b => b.Price > 500)
+            //                     .OrderByDescending(b => b.Price)
+            //                     .Skip(2)
+            //                     .Take(2);
+
+            //foreach (Book b in selBooks2)
+            //    Console.WriteLine(b);
+
+            var selBooks = books.OrderBy(b => b.Price)
+                                .Select(b => new { Title = b.Title.ToUpper(),
+                                                   NetPrice = b.Price * 1.12 });
+
+            foreach (var b in selBooks)
+                Console.WriteLine(b.Title + " " + b.NetPrice);
+
+           
+
+        }
+    }
+}
+
+
+QueryExpressionsDemo.cs
+=======================
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace csharpdemo
+{
+    class QueryExpressionsDemo
+    {
+        public static void Main()
+        {
+            List<Book> books = Book.GetBooks();
+
+            var selBooks = from b in books
+                           where b.Price > 500
+                           orderby b.Price descending 
+                           select b;
+
+
+            foreach (var b in selBooks)
+                Console.WriteLine(b.Title + " " + b.Price);
+
+
+            var maxprice = books.Max(b => b.Price);
+
+            var costlyBook = 
+                           (from b in books
+                           where b.Price == maxprice
+                           select b).First();
+
+            Console.WriteLine(costlyBook);
+
+
+        }
+    }
+}
+
