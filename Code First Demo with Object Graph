@@ -1,0 +1,57 @@
+Publisher.cs
+=============
+class Publisher
+    {
+        public int PublisherId { get; set; }
+        public string  Name { get; set; }
+        public virtual ICollection<Book> Books { get; set; }
+
+        public Publisher ()
+        {
+            Books = new HashSet<Book>();
+        }
+    }
+    
+Book.cs
+=========
+class Book
+    {
+        public int BookId { get; set; }
+        public string Title { get; set; }
+        public int Price { get; set; }
+        public int PublisherId { get; set; }
+
+        public Publisher Publisher { get; set; }
+
+    }
+    
+CatalogContext.cs
+===================
+class CatalogContext : DbContext 
+    {
+        public CatalogContext() 
+             :base(@"Data Source=(localdb)\mssqllocaldb;Initial Catalog=msdb;Integrated Security=True;MultipleActiveResultSets=True;Application Name=EntityFramework")
+        { }
+
+        public DbSet<Book> Books { get; set; }
+        public DbSet<Publisher> Publishers { get; set; }
+    }
+    
+AddPublisher.cs
+================
+ class AddPublisher
+    {
+        static void Main(string[] args)
+        {
+            CatalogContext ctx = new CatalogContext();
+            ctx.Database.Log = Console.WriteLine;
+
+            Publisher p = new Publisher { Name = "Apress" };
+            p.Books.Add(new Book { Title = "Angular 4", Price = 600 });
+            p.Books.Add(new Book { Title = "Asp.Net MVC", Price = 800 });
+
+            ctx.Publishers.Add(p);
+            ctx.SaveChanges();
+        }
+    }
+    
