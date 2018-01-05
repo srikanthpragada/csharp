@@ -1,0 +1,22 @@
+ class FunDemo
+    {
+        static void Main(string[] args)
+        {
+            int[] a = { 10, 20, 30, 40, 50 };
+            int sum, avg;
+
+            //  Pass by reference but  actual parameters need not be initialized 
+            Stats(a, out sum, out avg);
+            Console.WriteLine("Sum {0} Average {1}", sum, avg);
+        }
+
+        static void Stats(int[] nums, out int sum, out int avg)
+        {
+            sum = 0;
+            foreach (int n in nums)
+                sum += n;
+
+            avg = sum / nums.Length;
+        }
+     
+    }
