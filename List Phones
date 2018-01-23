@@ -1,0 +1,141 @@
+Sample Data - phones.txt
+=========================
+Bob:9988776655
+Andy:39343434
+Steve:3434343434
+Bill:34343433434
+Joe:9999993933
+Mike:7474747444
+Scott:39392939222
+Balmer:34343434343
+Tom:6765765331
+Tom:6765765331
+Mike:3938818111
+Stagner:98558555
+Bob:9999999999
+
+
+
+ListPhones.cs
+==============
+// sorts details by phone number and prints phone number and name 
+using System.Collections.Generic;
+using System.IO;
+using System;
+
+namespace ConsoleApp
+{
+    class ListPhones
+    {
+        static void Main(string[] args)
+        {
+            StreamReader sr = new StreamReader(@"f:\classroom\phones.txt");
+            var phones = new SortedDictionary<string, string>();
+
+            while (true)
+            {
+                string line = sr.ReadLine();
+                if (line == null)
+                    break;
+                string[] parts = line.Split(':');
+                if (parts.Length >  && !phones.ContainsKey(parts[1]))
+                    phones.Add(parts[1], parts[0]);  // number is key, name is value 
+            }
+
+            sr.Close();
+
+            foreach (string number in phones.Keys)
+            {
+                Console.WriteLine("{0} - {1}", number.PadRight(12), phones[number]);
+            }
+        }
+    }
+}
+
+Sample Output 
+===============
+34343433434  - Bill
+3434343434   - Steve
+34343434343  - Balmer
+39343434     - Andy
+3938818111   - Mike
+39392939222  - Scott
+6765765331   - Tom
+7474747444   - Mike
+98558555     - Stagner
+9988776655   - Bob
+9999993933   - Joe
+9999999999   - Bob
+
+
+ListPhones2.cs
+==============
+// Lists names and phone numbers by sorting data by name 
+
+using System.Collections.Generic;
+using System.IO;
+using System;
+
+namespace ConsoleApp
+{
+    class ListPhones2
+    {
+        static void Main(string[] args)
+        {
+            StreamReader sr = new StreamReader(@"f:\classroom\phones.txt");
+            var phones = new SortedDictionary<string, SortedSet<string> >();
+
+            while (true)
+            {
+                string line = sr.ReadLine();
+                if (line == null)   // EOF
+                    break;
+                string[] parts = line.Split(':');
+                if (parts.Length < 2)
+                    continue;
+
+                string name = parts[0];
+                string phone = parts[1];
+
+                if (phones.ContainsKey(name))
+                {
+                    phones[name].Add(phone);  // add new number to existing list 
+                }
+                else
+                {
+                    // create a list for numbers
+                    var numbers = new SortedSet<string>();
+                    numbers.Add(phone);
+                    // add name as key, numbers as value 
+                    phones.Add(name, numbers);
+                }
+             }
+            sr.Close();
+
+            foreach (string name in phones.Keys)
+            {
+                Console.Write(name.PadRight(15));
+                foreach( string number in phones[name])
+                {
+                    Console.Write(number.PadRight(12) + " ");
+                }
+                Console.WriteLine(); // come to next line 
+            }
+        }
+    }
+}
+
+Sample Output 
+=============
+Andy           39343434
+Balmer         34343434343
+Bill           34343433434
+Bob            9988776655   9999999999
+Joe            9999993933
+Mike           3938818111   7474747444
+Scott          39392939222
+Stagner        98558555
+Steve          3434343434
+Tom            6765765331
+
+
