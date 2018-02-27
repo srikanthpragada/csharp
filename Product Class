@@ -1,0 +1,107 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp
+{
+    class Product
+    {
+        private int id;
+        private string name;
+        private int qoh;
+        private double price;
+        private static double tax = 12.5;
+
+        public Product(int id, string name)
+        {
+            this.id = id;
+            this.name = name;
+        }
+
+        public Product(int id, string name, double price)
+        {
+            this.id = id;
+            this.name = name;
+            this.price = price; 
+        }
+
+        public void Purchase(int qty)
+        {
+            this.qoh += qty;
+        }
+
+        public void Purchase(int qty, double price)
+        {
+            this.qoh += qty;
+            this.price = price;
+        }
+
+        public void Sell(int qty)
+        {
+            if (this.qoh >= qty)
+                this.qoh -= qty;
+            else
+                Console.WriteLine("Insufficient Stock To Sell!");
+        }
+
+        public void Print()
+        {
+            Console.WriteLine(id);
+            Console.WriteLine(name);
+            Console.WriteLine(qoh);
+            Console.WriteLine(price);
+        }
+
+        // Properties 
+        public int Quantity   // Read-only property
+        {
+            get
+            {
+                return this.qoh; 
+            }
+        }
+
+        public double BasePrice  // Read-write property
+        {
+            get
+            {
+                return this.price;
+            }
+            set
+            {
+                if (value >=0)
+                     this.price = value;
+            }
+        }
+
+        public double SellingPrice
+        {
+            get
+            {
+                return this.price + (this.price * tax / 100);
+            }
+        }
+    }  // Product
+
+------------------------------------------------------------------
+    class TestProduct
+    {
+
+        static void Main()
+        {
+            Product p1 = new Product(1, "iPhone X", 80000);
+            Product p2 = new Product(2, "Samsumg Galaxy s8");
+
+            p1.Purchase(10);
+            p1.Sell(2);
+            Console.WriteLine(p1.Quantity);
+
+
+            p2.Purchase(20, 50000);
+            p2.BasePrice = 49000;
+            Console.WriteLine(p2.SellingPrice);
+        }
+    }
+}
