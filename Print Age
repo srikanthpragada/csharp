@@ -1,0 +1,80 @@
+it_persons.txt
+==============
+Micheal Dell,1965-2-23
+Larry Page,1973-mar-26
+Sergy Brin,1973-8-21
+Larry Ellison,1944-8-17
+Mark Zukerberg,1984-5-14
+Bill Gates1973-mar-26
+
+
+
+// Program to read data from it_persons.txt and print name and age in years 
+using System;
+using System.IO;
+
+namespace ConsoleApp
+{
+    class PrintAge
+    {
+        static void Main(string[] args)
+        {
+            StreamReader sr = new StreamReader(@"e:\classroom\it_persons.txt");
+            StreamWriter sw = new StreamWriter(@"e:\classroom\invalid_data.txt");
+            int lineno = 0;
+            while (true)
+            {
+                string line = sr.ReadLine();
+                lineno++;
+
+                if (line == null) // EOF
+                    break;
+
+                if (line.Trim().Length == 0)  // Ignore blank lines 
+                    continue;
+
+
+                string [] parts = line.Split(',');
+
+
+                // Ignore lines that don't have two parts 
+                if (parts.Length < 2)
+                {
+                    sw.WriteLine("{0}:{1}",lineno,line);
+                    continue;
+                }
+
+
+                string[] dateparts = parts[1].Split('-');  // DOB is to be split 
+                // DOB format yyyy-mm-dd 
+                try
+                {
+                    DateTime dob = new DateTime(Int32.Parse(dateparts[0]), Int32.Parse(dateparts[1]), Int32.Parse(dateparts[2]));
+                    TimeSpan span = DateTime.Today.Subtract(dob);
+                    Console.WriteLine("{0}  - {1}", parts[0].PadRight(30), Math.Floor(span.Days / 365.0));
+                }
+                catch(Exception ex)
+                {
+                    sw.WriteLine("{0}:{1}", lineno, line);
+                }
+            }
+
+            sr.Close();
+            sw.Close(); 
+
+        }
+    }
+}
+
+
+Output
+=======
+Micheal Dell                    - 53
+Sergy Brin                      - 44
+Larry Ellison                   - 73
+Mark Zukerberg                  - 33
+
+invalid_data.txt
+================
+2:Larry Page,1973-mar-26
+6:Bill Gates1973-mar-26
